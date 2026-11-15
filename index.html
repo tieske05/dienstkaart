@@ -79,6 +79,12 @@ h1{font-size:1.05rem;font-weight:600;color:var(--mute);margin:.2rem 0 .8rem}
 .lvb{margin-left:.5rem;font-weight:600;color:var(--acc);font-size:.9rem}
 .lvo{margin-top:.3rem;font-weight:600;color:var(--acc)}
 .nx a{color:inherit;text-decoration:underline}
+.wis2{border-bottom:2px solid var(--acc)}
+.wh{padding:.35rem 1rem;font-weight:600;font-size:.85rem;color:var(--mute);background:var(--walk)}
+.wr{display:grid;grid-template-columns:3.4rem 2.7rem 1fr 3.4rem;gap:.4rem;align-items:baseline;padding:.4rem 1rem;border-bottom:1px solid var(--line)}
+.wr:last-child{border-bottom:0}
+.wr .a{font-weight:700}
+.wr.past{opacity:.45}
 .nx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin:0 0 .6rem;padding:.55rem .8rem;border-radius:.6rem;background:var(--acc);color:var(--accink);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .nx[hidden]{display:none}
 .nx .ln{display:inline-block;min-width:1.8rem;padding:0 .3rem;text-align:center;border-radius:.3rem;background:var(--accink);color:var(--acc);font-weight:700}
@@ -104,6 +110,9 @@ const D=[{"t":"mv","c":"a","n":"2601","s":"04:55","z":"11:36","u":"06:41","r":[{
 const T={mv:"Ma–vr",za:"Za",zo:"Zo",vk:"Vakantie"};
 const H={HtrHoo:"Herten, Hoofdstraat",HotVer:"Horst, St. Antoniuspark",DneSL1:"Deurne, snellader 1",DneKan:"Deurne, Kantine",HejGaK:"Heijen, Garage Kantine",NmKnt:"Nijmegen, Kantine",GnpKan:"Gennep, Kantine",VloVli:"Venlo, Vlinder",VloGF1:"Venlo, Garage Lader F 1",VloGC2:"Venlo, Garage Lader C 2",VloGC3:"Venlo, Garage Lader C 3",VloGD2:"Venlo, Garage Lader D 2",BriKlb:"Blerick, Klingerberg",BriVos:"Blerick, Vossenerlaan",BxmNs:"Boxmeer, Station",DneSta:"Deurne, Station",EctSta:"Echt, Station",GnpBus:"Gennep, Busstation",HejGar:"Heijen, Garage",HejHwg:"Heijen, Heesweg",HotDoo:"Horst, Doolgaardstraat",HotOud:"Horst, Oude Lind",HrtHoo:"Herten, Hoofdstraat",HxhKer:"Herkenbosch, Centrum",ItvBri:"Ittervoort, Centrum",KdkSch:"Kaldenkerken, Am Schwimmbad",KslBra:"Kessel, Baarskampstraat",LniNie:"Linne, Nieuwe Markt",LtmMar:"Lottum, Markt",Mat:"Materiaalrit",MbtSte:"Maasbracht, Stevensweerterweg",MekHei:"Melick, John F. Kennedysingel",MeyBus:"Meijel, Busstation",MrhHof:"Maria Hoop, Hofje",NmCS:"Nijmegen, Centraal Station",PneGem:"Panningen, Gemeentehuis",RglBru:"Roggel, Brugstraat",RmdBuf:"Roermond, Station buffervak",RmdCol:"Roermond, Bisschopelijk College",RmdGar:"Roermond, Garage (Herten)",RmdHam:"Roermond, Hambeek",RmdSt1:"Roermond, Station",RmdSta:"Roermond, Station",RmdVan:"Roermond, Van Heutzstraat",RvrSta:"Reuver, Station",SobBer:"Sint Odiliënberg, Bernhardlaan",TglGla:"Tegelen, Glazenapstraat",TglSpe:"Tegelen, Spechtstraat",VloGA1:"Venlo, Garage Lader A 1",VloGAB1:"Venlo, Garage Lader B 1",VloGB1:"Venlo, Garage Lader B 1",VloGC1:"Venlo, Garage Lader C 1",VloGD1:"Venlo, Garage D 1",VloGar:"Venlo, Garage",VloSL1:"Venlo, Station snellader 1",VloSL2:"Venlo, Station snellader 2",VloSL3:"Venlo, Station snellader 3",VloSta:"Venlo, Station",VryBus:"Venray, Busstation",VryOlw:"Venray, (Nieuwe) Overloonseweg (halte Broekweg)",VrySL1:"Venray, Station snellader",VrySta:"Venray, Station",VryWeg:"Venray, Weg in den Berg",WelVin:"Well, Kasteellaan",WemVan:"Wessem, Van Horneplein",WetSta:"Weert, Station",HfkJac:"Heierhoeve, James Cookweg",VryKan:"Venray, Kantine",VloGST:"Venlo, Garage Stekkerlader",RmdRij:"Roermond, Mussenberg",VloGaK:"Venlo, Garage Kantine",RmdMar:"Roermond, Marathonlaan",HtrHer:"Herten, Hertenerweg",RmdGaK:"Roermond, Garage Kantine",VloBuf:"Venlo, Station buffervak",RmdKan:"Roermond, Kantine",VloKan:"Venlo, Kantine",KdkSL1:"Kaldenkerken, snellader 1",VloSt1:"Venlo, Station"};
 const hn=c=>H[c]||c;
+const HC={"HtrHoo":[51.17253,5.95862],"HotVer":[51.44857,6.05701],"BriKlb":[51.37654,6.12728],"BriVos":[51.36689,6.12985],"BxmNs":[51.64414,5.93985],"DneSta":[51.4565,5.7873],"EctSta":[51.09984,5.87816],"GnpBus":[51.6943,5.97406],"HejHwg":[51.67584,5.97629],"HotDoo":[51.45301,6.05649],"HotOud":[51.46398,6.05403],"HrtHoo":[51.17253,5.95862],"HxhKer":[51.154,6.06283],"ItvBri":[51.17088,5.82274],"KslBra":[51.29284,6.05015],"LniNie":[51.15657,5.94261],"LtmMar":[51.4604,6.16192],"MbtSte":[51.14036,5.88281],"MekHei":[51.15908,6.00799],"MeyBus":[51.34328,5.8809],"MrhHof":[51.0898,5.97013],"NmCS":[51.84381,5.85369],"RglBru":[51.26125,5.92769],"RmdBuf":[51.19341,5.99376],"RmdHam":[51.18122,5.9761],"RmdSt1":[51.19341,5.99376],"RmdSta":[51.19341,5.99376],"RmdVan":[51.17527,6.01655],"RvrSta":[51.28331,6.07883],"SobBer":[51.14485,6.00575],"TglGla":[51.33288,6.1541],"TglSpe":[51.33451,6.15623],"VloSL1":[51.36497,6.17242],"VloSL2":[51.36497,6.17242],"VloSL3":[51.36497,6.17242],"VloSta":[51.36497,6.17242],"VrySta":[51.52652,6.01399],"VryWeg":[51.51447,5.96458],"WelVin":[51.55662,6.09501],"WemVan":[51.16212,5.88165],"WetSta":[51.24913,5.70555],"HfkJac":[51.39152,6.11347],"RmdRij":[51.17297,5.97291],"RmdMar":[51.19367,6.01421],"VloBuf":[51.36497,6.17242],"VloSt1":[51.36497,6.17242]};
+const km=(a,b)=>{const r=Math.PI/180,dl=(b[0]-a[0])*r,dn=(b[1]-a[1])*r,x=Math.sin(dl/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dn/2)**2;return 12742*Math.asin(Math.sqrt(x))};
+const kmt=v=>v<10?v.toFixed(1).replace(".",",")+" km":Math.round(v)+" km";
 const VN={"Lage vloer met Albatros - Streek":"VDL Citea LLE-120","Q-liner met Albatros":"Volvo 8900 LE","Electrische bus":"VDL Citea LLE-99 Electric","Lage vloer Stad / Electrisch":"VDL Citea LLE-115 Electric","Lagevloer met Albatros / 10 m.":"VDL Citea LLE-99","Micro met Albatros - 8 pers. [vast]":"Mercedes-Benz Sprinter"};
 const g=new Date().getDay();
 let type=g===0?"zo":g===6?"za":"mv";
@@ -135,7 +144,7 @@ function render(){
     if(o2.length){per=o2[0].p;type=o2[0].t;return render()}
     out.innerHTML=`<p class="msg">Dienst ${esc(v)} staat niet in het rooster. Controleer het nummer.</p>`;return;
   }
-  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();bar();renderPins();
+  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();wisselLive();bar();renderPins();
 }
 let cur=null,force=false,omv=null;
 const mins=t=>{const p=t.split(":");return +p[0]*60+ +p[1]};
@@ -221,6 +230,7 @@ function intervals(R){
 const rt=r=>r.v?esc(hn(r.v))+" → "+esc(hn(r.n)):esc(r.x||"");
 const bdg=l=>l?`<span class="ln">${esc(l)}</span> `:"";
 function bar(){
+  wisselPast();
   const el=document.getElementById("nx");el.hidden=true;
   if(!cur)return;
   const now=new Date(),wd=now.getDay();
@@ -303,7 +313,56 @@ async function pollLive(){
   if(!LIVE)return;
   try{const r=await fetch(document.body.dataset.api||"api/bussen",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();live=j.bussen||[];liveR=j.ritten||[]}catch(e){live=[];liveR=[]}
   if(omv){const c=document.getElementById("lvoc");if(c)c.innerHTML=liveOm()}
-  else if(cur){liveMark();bar()}
+  else if(cur){liveMark();wisselLive();bar()}
+}
+function nowN(d){
+  if(!d)return null;
+  const now=new Date(),wd=now.getDay();
+  const act=force||((d.p==="a")!==(now>=SW)&&(d.t==="zo"?wd===0:d.t==="za"?wd===6:wd>0&&wd<6));
+  if(!act)return null;
+  const iv=intervals(d.r).filter(Boolean);if(!iv.length)return null;
+  let N=now.getHours()*60+now.getMinutes();
+  const first=Math.min(...iv.map(x=>x[0])),last=Math.max(...iv.map(x=>x[1]));
+  if(N<first&&N+1440<=last)N+=1440;
+  return N;
+}
+function wissels(d){
+  const R=d.r,oc=[];let co=null;
+  R.forEach(r=>{if(!r.k&&r.o)co=r.o;oc.push(co)});
+  const res=[];
+  R.forEach((r,i)=>{
+    if(r.k!=="a")return;
+    let code=null,o=null;
+    if(r.i===0){for(let j=i+1;j<R.length;j++){const q=R[j];if(!q.k&&(q.l||q.m)&&q.v){code=q.v;o=oc[j];break}}}
+    else{for(let j=i-1;j>=0;j--){const q=R[j];if(!q.k&&(q.l||q.m)&&q.n){code=q.n;o=oc[j];break}}}
+    res.push({r,code,o});
+  });
+  const mn2=w=>{const m=mins(w.r.t);return m<180?m+1440:m};
+  res.sort((a,b)=>mn2(a)-mn2(b));
+  return res;
+}
+function wisselHtml(d){
+  const W=wissels(d);if(!W.length)return"";
+  const N=nowN(d);
+  return `<div class="wis2"><div class="wh">Wissels</div>${W.map(w=>{
+    const r=w.r;let mm=mins(r.t);if(mm<180)mm+=1440;
+    return `<div class="wr${N!==null&&mm<=N?" past":""}" data-m="${mm}" data-o="${esc(w.o||"")}" data-c="${esc(w.code||"")}"><span class="a">${tm(r.t)}</span><span>${r.i?"↗":"↘"}</span><span>${r.i?"Afgelost door":"Je lost af:"} dienst <button type="button" class="dn" data-d="${esc(r.d)}">${esc(r.d)}</button>${w.code?`<span class="sub">${esc(hn(w.code))}</span>`:""}<span class="sub wl"></span></span><span></span></div>`;
+  }).join("")}</div>`;
+}
+function wisselPast(){
+  const els=out.querySelectorAll(".wr");
+  if(!cur||!els.length)return;
+  const N=nowN(cur);
+  els.forEach(e=>{if(N!==null&&+e.dataset.m<=N)e.classList.add("past");else e.classList.remove("past")});
+}
+function wisselLive(){
+  if(!cur)return;
+  out.querySelectorAll(".wr").forEach(e=>{
+    const sp=e.querySelector(".wl");if(!sp)return;
+    const o=e.dataset.o,hc=HC[e.dataset.c];
+    const b=o?live.find(b=>b.diensten.some(x=>x.o===o&&x.p===cur.p)):null;
+    sp.innerHTML=b?`🚌 ${esc(b.voertuig)}${hc?" · "+kmt(km([b.lat,b.lon],hc))+" van de wissel":""}${dv(b)}`:"";
+  });
 }
 function omItems(o,p,t){
   const res=[];
