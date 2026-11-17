@@ -85,6 +85,10 @@ h1{font-size:1.05rem;font-weight:600;color:var(--mute);margin:.2rem 0 .8rem}
 .wr:last-child{border-bottom:0}
 .wr .a{font-weight:700}
 .wr.past{opacity:.45}
+.vv{padding:.5rem 1rem;background:var(--band);color:var(--bandink);font-weight:600;font-size:.9rem}
+.r.vervalt{opacity:.7}
+.r.vervalt>span:nth-child(3){text-decoration:line-through}
+.r.vervalt .lvb{display:inline-block;text-decoration:none;color:var(--bandink)}
 .nx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;margin:0 0 .6rem;padding:.55rem .8rem;border-radius:.6rem;background:var(--acc);color:var(--accink);font-weight:600;box-shadow:0 2px 6px rgba(0,0,0,.18)}
 .nx[hidden]{display:none}
 .nx .ln{display:inline-block;min-width:1.8rem;padding:0 .3rem;text-align:center;border-radius:.3rem;background:var(--accink);color:var(--acc);font-weight:700}
@@ -144,7 +148,7 @@ function render(){
     if(o2.length){per=o2[0].p;type=o2[0].t;return render()}
     out.innerHTML=`<p class="msg">Dienst ${esc(v)} staat niet in het rooster. Controleer het nummer.</p>`;return;
   }
-  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();wisselLive();bar();renderPins();
+  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}<div id="vvb"></div>${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();wisselLive();vervalBanner();bar();renderPins();
 }
 let cur=null,force=false,omv=null;
 const mins=t=>{const p=t.split(":");return +p[0]*60+ +p[1]};
@@ -247,13 +251,13 @@ function bar(){
   else{
     const r=R[i],t=r.k==="p"?fmt(iv[i][0]):tm(r.a);
     h="<b>Volgende activiteit:</b> "+t+" "+(r.k==="p"?"☕ Pauze "+esc(r.e):bdg(r.l)+(r.m?"Materiaalrit ":"")+rt(r));
-    const fl=findLive(cur,r);if(fl&&fl.v&&fl.v.start!=null&&Math.abs(fl.v.start)>=60)h+=` (verwacht ${dly(fl.v.start)})`;
+    const fl=findLive(cur,r);if(fl&&fl.x)h+=" (✖ vervalt)";else if(fl&&fl.v&&fl.v.start!=null&&Math.abs(fl.v.start)>=60)h+=` (verwacht ${dly(fl.v.start)})`;
     if(r.m){
       const j=R.findIndex((q,k)=>k>i&&q.l&&!q.k);
       if(j>=0){const f2=findLive(cur,R[j]);h+=`<div class="nx2">Daarna: ${bdg(R[j].l)}${tm(R[j].a)} ${rt(R[j])}${f2&&f2.v&&f2.v.start!=null&&Math.abs(f2.v.start)>=60?" (verwacht "+dly(f2.v.start)+")":""}</div>`}
     }
   }
-  const lb=liveD(cur);if(lb.length)h+=lb.map(b=>`<div class="nx2">🚌 Bus <b>${esc(b.voertuig)}</b> rijdt nu rit ${esc(b.rit)} (lijn ${esc(b.lijn)})${dv(b)}${b.v&&b.v.eind!=null&&Math.abs(b.v.eind)>=60?" · aankomst "+dly(b.v.eind):""} · ${mp(b)} · ${age(b)} geleden</div>`).join("");
+  const lb=liveD(cur);if(lb.length)h+=lb.map(b=>`<div class="nx2">🚌 Bus <b>${esc(b.voertuig)}</b> rijdt nu rit ${esc(b.rit)} (lijn ${esc(b.lijn)})${b.x?" · ✖ rit vervalt":dv(b)+(b.v&&b.v.eind!=null&&Math.abs(b.v.eind)>=60?" · aankomst "+dly(b.v.eind):"")} · ${mp(b)} · ${age(b)} geleden</div>`).join("");
   el.innerHTML=h;el.hidden=false;
 }
 setInterval(()=>{mark();bar();omNow()},30000);
@@ -293,14 +297,15 @@ const mp=b=>`<a href="https://www.google.com/maps?q=${b.lat},${b.lon}" target="_
 function liveMark(){
   if(!cur||omv||lv)return;
   const els=out.querySelectorAll(".card .r");
-  els.forEach(e=>{const x=e.querySelector(".lvb");if(x)x.remove()});
+  els.forEach(e=>{const x=e.querySelector(".lvb");if(x)x.remove();e.classList.remove("vervalt")});
   if(els.length!==cur.r.length)return;
   const lb=liveD(cur);
   cur.r.forEach((r,i)=>{
     if(!r.l||!r.a)return;
     const f=x2=>x2.diensten.some(x=>x.d===cur.n&&x.p===cur.p&&x.a===r.a&&x.l===r.l);
-    const b=lb.find(f),rr=b?null:liveR.find(f);
+    const b=lb.find(f),rr=b?null:liveR.find(f),en=b||rr;
     const sp=els[i]&&els[i].children[2];
+    if(en&&en.x){els[i].classList.add("vervalt");if(sp)sp.insertAdjacentHTML("beforeend",`<span class="lvb">✖ vervalt</span>`);return}
     if(sp&&b)sp.insertAdjacentHTML("beforeend",`<span class="lvb">🚌 ${esc(b.voertuig)}${b.v&&b.v.nu!=null&&Math.abs(b.v.nu)>=60?" · "+dly(b.v.nu):""}</span>`);
     else if(sp&&rr&&rr.v&&rr.v.start!=null&&Math.abs(rr.v.start)>=60)sp.insertAdjacentHTML("beforeend",`<span class="lvb">⏱ ${dly(rr.v.start)}</span>`);
   });
@@ -313,7 +318,7 @@ async function pollLive(){
   if(!LIVE)return;
   try{const r=await fetch(document.body.dataset.api||"api/bussen",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();live=j.bussen||[];liveR=j.ritten||[]}catch(e){live=[];liveR=[]}
   if(omv){const c=document.getElementById("lvoc");if(c)c.innerHTML=liveOm()}
-  else if(cur){liveMark();wisselLive();bar()}
+  else if(cur){liveMark();wisselLive();vervalBanner();bar()}
 }
 function nowN(d){
   if(!d)return null;
@@ -363,6 +368,14 @@ function wisselLive(){
     const b=o?live.find(b=>b.diensten.some(x=>x.o===o&&x.p===cur.p)):null;
     sp.innerHTML=b?`🚌 ${esc(b.voertuig)}${hc?" · "+kmt(km([b.lat,b.lon],hc))+" van de wissel":""}${dv(b)}`:"";
   });
+}
+function vervalBanner(){
+  const el=document.getElementById("vvb");if(!el)return;
+  if(!cur){el.innerHTML="";return}
+  const xs=[];
+  liveR.concat(live).forEach(b=>{if(b.x)b.diensten.filter(x=>x.d===cur.n&&x.p===cur.p).forEach(x=>xs.push(x))});
+  xs.sort((a,b)=>mins(a.a)-mins(b.a));
+  el.innerHTML=xs.length?`<div class="vv">⚠ ${xs.length===1?"1 rit vervalt":xs.length+" ritten vervallen"}: ${xs.map(x=>`${tm(x.a)} lijn ${esc(x.l)} (${esc(hn(x.v))} → ${esc(hn(x.n))})`).join("; ")}</div>`:"";
 }
 function omItems(o,p,t){
   const res=[];
