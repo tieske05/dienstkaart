@@ -36,6 +36,7 @@ h1{font-size:1.05rem;font-weight:600;color:var(--mute);margin:.2rem 0 .8rem}
 .p .e{color:var(--bandink)}
 .w{background:var(--walk)}
 .n{color:var(--mute);font-style:italic}
+.nu[hidden]{display:none}
 .nu{display:inline-block;margin:-.4rem .4rem 1rem 0;padding:.4rem .7rem;font-size:.9rem;font-weight:600;font-family:inherit;border:2px solid var(--line);border-radius:.6rem;background:var(--card);color:var(--ink)}
 .nu[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--accink)}
 .nu:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
@@ -103,7 +104,7 @@ footer{color:var(--mute);font-size:.85rem;margin-top:1.2rem}
 <div id="pins" class="pins" hidden></div>
 <div id="per" class="seg per" role="group" aria-label="Periode"></div>
 <div class="seg" role="group" aria-label="Dagtype"></div>
-<button type="button" id="lvb" class="nu" aria-pressed="false">☰ Dienstenoverzicht</button>
+<button type="button" id="lvb" class="nu" aria-pressed="false" hidden>☰ Dienstenoverzicht</button>
 <button type="button" id="nu" class="nu" aria-pressed="false">Altijd markeren, ook op feestdagen</button>
 <div id="nx" class="nx" hidden></div>
 <div id="out"></div>
@@ -148,7 +149,7 @@ function render(){
     if(o2.length){per=o2[0].p;type=o2[0].t;return render()}
     out.innerHTML=`<p class="msg">Dienst ${esc(v)} staat niet in het rooster. Controleer het nummer.</p>`;return;
   }
-  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}<div id="vvb"></div>${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();wisselLive();vervalBanner();bar();renderPins();
+  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}<div id="vvb"></div>${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;unlock();mark();liveMark();wisselLive();vervalBanner();bar();renderPins();
 }
 let cur=null,force=false,omv=null;
 const mins=t=>{const p=t.split(":");return +p[0]*60+ +p[1]};
@@ -263,6 +264,12 @@ function bar(){
 setInterval(()=>{mark();bar();omNow()},30000);
 let lv=false;const F={g:"",bf:"",bt:"",ef:"",et:"",so:"n"};
 function setLv(v){lv=v;document.getElementById("lvb").setAttribute("aria-pressed",v)}
+let unlocked=false;
+function unlock(){
+  if(unlocked)return;
+  unlocked=true;document.getElementById("lvb").hidden=false;
+  try{localStorage.setItem("dk-open","1")}catch(e){}
+}
 const tv=s=>{if(!s)return null;let m=mins(s);if(m<180)m+=1440;return m};
 const SO=[["n","Dienstnummer"],["s","Begintijd"],["e","Eindtijd"],["u","Duur, kort eerst"],["U","Duur, lang eerst"]];
 function fillList(){
@@ -424,7 +431,7 @@ function omNow(){
 }
 function go(b){omv=null;setLv(false);if(b.dataset.t)type=b.dataset.t;if(b.dataset.p)per=b.dataset.p;q.value=b.dataset.d;render();window.scrollTo(0,0)}
 out.addEventListener("input",e=>{const f=e.target.dataset&&e.target.dataset.f;if(f&&lv){F[f]=e.target.value;fillList()}});
-document.getElementById("lvb").addEventListener("click",()=>{setLv(!lv);omv=null;render();window.scrollTo(0,0)});
+document.getElementById("lvb").addEventListener("click",()=>{if(!unlocked)return;setLv(!lv);omv=null;render();window.scrollTo(0,0)});
 out.addEventListener("click",e=>{
   const l=e.target.closest(".lr");if(l){go(l);return}
   const gb=e.target.closest(".lvg button");if(gb){F.g=gb.dataset.g;render();return}
@@ -445,6 +452,7 @@ perSeg.addEventListener("click",e=>{const k=e.target.dataset&&e.target.dataset.k
 seg.addEventListener("click",e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){omv=null;type=k;render()}});
 q.addEventListener("input",()=>{omv=null;if(lv)setLv(false);render()});
 loadPins();
+try{if(localStorage.getItem("dk-open")==="1")unlock()}catch(e){}
 if(pins.length){per=pins[0].p;q.value=pins[0].n}
 render();
 pollLive();setInterval(pollLive,15000);
