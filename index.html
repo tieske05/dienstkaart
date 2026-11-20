@@ -133,7 +133,8 @@ function row(r){
   const sub=[esc(r.g),r.m?"Materiaalrit":"",r.j?"rit "+esc(r.j):"",r.o?'<button type="button" class="om" data-o="'+esc(r.o)+'">omloop '+esc(r.o.slice(0,-4))+"<b>"+esc(r.o.slice(-4))+"</b></button>":"",r.o&&r.w?esc(VN[r.w]||r.w):""].filter(Boolean).join(", ");
   return `<div class="r${r.g==="Lopen"?" w":""}"><span class="a">${tm(r.a)}</span><span${r.l?' class="ln"':""}>${esc(r.l)}</span><span>${route}${sub?`<span class="sub">${sub}</span>`:""}</span><span class="e">${tm(r.e)}</span></div>`;
 }
-function render(){
+function render(){render0();lvVis()}
+function render0(){
   const v=q.value.trim();
   cur=null;bar();renderPins();
   for(let n=1;!lv&&n<=Math.min(4,v.length);n++){const s=new Set(D.filter(x=>x.n.startsWith(v.slice(0,n))).map(x=>x.t));if(s.size===1){type=[...s][0];break}}
@@ -149,7 +150,7 @@ function render(){
     if(o2.length){per=o2[0].p;type=o2[0].t;return render()}
     out.innerHTML=`<p class="msg">Dienst ${esc(v)} staat niet in het rooster. Controleer het nummer.</p>`;return;
   }
-  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}<div id="vvb"></div>${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;unlock();mark();liveMark();wisselLive();vervalBanner();bar();renderPins();
+  out.innerHTML=`<div class="card"><div class="head">${pinBtn(d)}<div class="nr"><small>${esc(d.c)}</small>${esc(d.n)}</div><div class="tm">${tm(d.s)} – ${tm(d.z)} <span>duur ${esc(d.u)}</span></div>${d.g?`<div class="gn">${esc(d.g)}</div>`:""}</div>${warn(d)}<div id="vvb"></div>${wisselHtml(d)}${d.r.map(row).join("")}</div>`;cur=d;mark();liveMark();wisselLive();vervalBanner();bar();renderPins();
 }
 let cur=null,force=false,omv=null;
 const mins=t=>{const p=t.split(":");return +p[0]*60+ +p[1]};
@@ -264,12 +265,7 @@ function bar(){
 setInterval(()=>{mark();bar();omNow()},30000);
 let lv=false;const F={g:"",bf:"",bt:"",ef:"",et:"",so:"n"};
 function setLv(v){lv=v;document.getElementById("lvb").setAttribute("aria-pressed",v)}
-let unlocked=false;
-function unlock(){
-  if(unlocked)return;
-  unlocked=true;document.getElementById("lvb").hidden=false;
-  try{localStorage.setItem("dk-open","1")}catch(e){}
-}
+function lvVis(){document.getElementById("lvb").hidden=!(lv||cur||omv)}
 const tv=s=>{if(!s)return null;let m=mins(s);if(m<180)m+=1440;return m};
 const SO=[["n","Dienstnummer"],["s","Begintijd"],["e","Eindtijd"],["u","Duur, kort eerst"],["U","Duur, lang eerst"]];
 function fillList(){
@@ -431,7 +427,7 @@ function omNow(){
 }
 function go(b){omv=null;setLv(false);if(b.dataset.t)type=b.dataset.t;if(b.dataset.p)per=b.dataset.p;q.value=b.dataset.d;render();window.scrollTo(0,0)}
 out.addEventListener("input",e=>{const f=e.target.dataset&&e.target.dataset.f;if(f&&lv){F[f]=e.target.value;fillList()}});
-document.getElementById("lvb").addEventListener("click",()=>{if(!unlocked)return;setLv(!lv);omv=null;render();window.scrollTo(0,0)});
+document.getElementById("lvb").addEventListener("click",()=>{setLv(!lv);omv=null;render();window.scrollTo(0,0)});
 out.addEventListener("click",e=>{
   const l=e.target.closest(".lr");if(l){go(l);return}
   const gb=e.target.closest(".lvg button");if(gb){F.g=gb.dataset.g;render();return}
@@ -452,7 +448,7 @@ perSeg.addEventListener("click",e=>{const k=e.target.dataset&&e.target.dataset.k
 seg.addEventListener("click",e=>{const k=e.target.dataset&&e.target.dataset.k;if(k){omv=null;type=k;render()}});
 q.addEventListener("input",()=>{omv=null;if(lv)setLv(false);render()});
 loadPins();
-try{if(localStorage.getItem("dk-open")==="1")unlock()}catch(e){}
+try{localStorage.removeItem("dk-open")}catch(e){}
 if(pins.length){per=pins[0].p;q.value=pins[0].n}
 render();
 pollLive();setInterval(pollLive,15000);
